@@ -71,19 +71,19 @@ export default function BasicTable() {
   const [students, setStudent] = useState([
     {
       id: 1,
-      name: "Arshath",
+      name: "Mohamed Arshath",
       rollNo: 101,
       age: 21,
     },
     {
       id: 2,
-      name: "Hyser",
+      name: "Mohamed Hyser",
       rollNo: 102,
       age: 23,
     },
     {
       id: 3,
-      name: "Faizal",
+      name: "Faizal Ahamed",
       rollNo: 103,
       age: 35,
     },
@@ -95,7 +95,7 @@ export default function BasicTable() {
     },
     {
       id: 5,
-      name: "Suhail",
+      name: "Suhail Ahamed",
       rollNo: 105,
       age: 26,
     },
@@ -109,7 +109,7 @@ export default function BasicTable() {
   const [errorRollNo, setErrorRollNo] = useState("");
   const [age, setStudentAge] = useState();
   const [errorAge, setErrorAge] = useState("");
-  const [upDate, setUpDate] = useState("");
+  const [search, setSearch] = useState("");
 
   function addStudent() {
     setStudent([...students, { id, name, rollNo, age }]);
@@ -118,6 +118,7 @@ export default function BasicTable() {
     setStudentName("");
     setStudentRollNo("");
     setStudentAge("");
+    setOpen("");
 
     if (id == "") {
       setErrorId("Enter Your Id");
@@ -186,8 +187,15 @@ export default function BasicTable() {
     students[position].name = name;
     students[position].rollNo = rollNo;
     students[position].age = age;
+
     return students;
   };
+
+  console.log(
+    students.filter((student) =>
+      student.rollNo.toLocaleString().includes(search)
+    )
+  );
 
   return (
     <TableContainer component={Paper}>
@@ -297,6 +305,7 @@ export default function BasicTable() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </Search>
           <Button variant="contained" onClick={handleClickOpen}>
@@ -316,23 +325,29 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {students.map((student, id) => (
-            <TableRow
-              key={student.name}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {student.id}
-              </TableCell>
-              <TableCell align="right">{student.name}</TableCell>
-              <TableCell align="right">{student.rollNo}</TableCell>
-              <TableCell align="right">{student.age}</TableCell>
-              <TableCell align="right">
-                <ModeEditIcon onClick={() => handleClickEdit(id)} />
-                <DeleteIcon onClick={() => handleRemove(id)} />
-              </TableCell>
-            </TableRow>
-          ))}
+          {students
+            .filter(
+              (student) =>
+                student.name.toLowerCase().includes(search) ||
+                student.rollNo.toLocaleString().includes(search)
+            )
+            .map((student, id) => (
+              <TableRow
+                key={student.name}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {student.id}
+                </TableCell>
+                <TableCell align="right">{student.name}</TableCell>
+                <TableCell align="right">{student.rollNo}</TableCell>
+                <TableCell align="right">{student.age}</TableCell>
+                <TableCell align="right">
+                  <ModeEditIcon onClick={() => handleClickEdit(id)} />
+                  <DeleteIcon onClick={() => handleRemove(id)} />
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
